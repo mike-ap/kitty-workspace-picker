@@ -1,0 +1,5 @@
+# yaml-language-server: $schema=https://lefthook.dev/schema.json
+pre-commit:
+  commands:
+    check:
+      run: just check

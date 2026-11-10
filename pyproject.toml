@@ -1,0 +1,69 @@
+[project]
+name = "kitty-workspace-picker"
+version = "0.1.0"
+description = "Fzf Kitty window picker with optional published workspace metadata"
+readme = "README.md"
+authors = [{ name = "Michael Apicelli" }]
+license = "MIT"
+license-files = ["LICENSE"]
+requires-python = ">=3.12"
+dependencies = []
+
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "mdformat>=1.0.0",
+    "mdformat-gfm>=1.0.0",
+    "pytest>=8",
+    "pytest-cov>=7",
+    "ruff>=0.14",
+]
+
+# Wheels serve the development environment; source archives are the release artifact.
+[tool.hatch.build.targets.wheel]
+packages = ["src/kitty_workspace_picker"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/src", "/tests", "/scripts", "/config", "/docs",
+    "/lefthook.yml", "/.editorconfig", "/.markdownlint-cli2.jsonc", "/bootstrap.sh", "/.github", "/config", "/install.sh", "/README.md", "/CONTRIBUTING.md", "/CHANGELOG.md", "/LICENSE",
+    "/pyproject.toml", "/uv.lock", "/justfile", "/.python-version", "/.gitignore",
+    "/.envrc", "/devenv.nix", "/devenv.yaml", "/devenv.lock",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.ruff]
+target-version = "py312"
+preview = false
+
+[tool.ruff.lint]
+# Explicit, stable rule groups; leave layout to Ruff's formatter.
+# https://docs.astral.sh/ruff/linter/#rule-selection
+select = [
+    "E4", "E7", "E9", # pycodestyle errors compatible with the formatter
+    "F",              # Pyflakes correctness
+    "I",              # import sorting
+    "B",              # bug-prone constructs
+    "UP",             # modern Python syntax
+    "SIM",            # simpler control flow
+    "C4",             # comprehensions
+    "PIE",            # redundant code
+    "RET",            # consistent return paths
+    "PERF",           # avoid unnecessary work
+    "FURB",           # modern Python idioms
+    "PGH",            # precise lint/type-checker directives
+    "RUF",            # Ruff-native correctness and simplification
+]
+
+[tool.coverage.run]
+branch = true
+source = ["src/kitty_workspace_picker"]
+
+[tool.coverage.report]
+show_missing = true
