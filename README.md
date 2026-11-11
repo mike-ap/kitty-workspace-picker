@@ -3,12 +3,12 @@
 An fzf picker for Kitty windows, with [Kitty
 Workspaces](https://github.com/mike-ap/kitty-workspaces) support.
 
-The picker lists individual windows. When Kitty Workspaces is present, it
-instead lists workspaces.
-
 <video src="docs/assets/kitty-workspaces-demo.mp4" controls width="100%">
   <a href="docs/assets/kitty-workspaces-demo.mp4">Watch the screencast</a>
 </video>
+
+The picker lists individual windows. When Kitty Workspaces is present, it
+instead lists workspaces.
 
 ## Installation
 
