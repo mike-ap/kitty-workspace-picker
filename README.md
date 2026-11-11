@@ -45,38 +45,26 @@ sh install.sh
 sh install.sh --config-dir /path/to/kitty
 ```
 
-### Uninstall
-
-Remove the picker binding from `kitty.conf`, then run from a checkout or
-extracted release:
-
-```sh
-sh install.sh --uninstall
-```
-
-Or use the stable installer:
-
-```sh
-curl -fsSL https://github.com/mike-ap/kitty-workspace-picker/releases/latest/download/bootstrap.sh | sh -s -- --uninstall
-```
-
-Use `--config-dir /path/to/kitty` for a custom configuration directory, and
-restart Kitty afterward.
-
 ## Usage
 
 Installation creates only the `kitty_workspace_picker/` package in Kitty’s
-configuration root. Add this binding to `kitty.conf`, choosing your preferred
-shortcut:
+configuration root. Add this suggested binding to `kitty.conf`:
 
 ```conf
-map <your-shortcut> kitten kitty_workspace_picker/kitten.py
+map ctrl+shift+p kitten kitty_workspace_picker/kitten.py
 ```
 
-Replace `<your-shortcut>` with a Kitty key combination of your choice (such as
-`ctrl+shift+p`) and then restart Kitty. The picker receives a dedicated control
-channel from Kitty, including for provider reads; globally enabled remote
+You can choose a different Kitty key combination. Then restart Kitty. The picker
+receives a dedicated control channel from Kitty, including for provider reads; globally enabled remote
 control is not required.
+
+Example:
+
+```text
+map ctrl+shift+p kitten kitty_workspace_picker/kitten.py
+map ctrl+shift+m kitten kitty_workspace_picker/kitten.py merge
+map ctrl+shift+d kitten kitty_workspace_picker/kitten.py send
+```
 
 The picker lists only tabs and panes in the OS window where it was opened. The
 kitten also accepts `merge` and `send` arguments, which you can bind to
@@ -140,6 +128,29 @@ The picker ignores `FZF_DEFAULT_OPTS` and `FZF_DEFAULT_OPTS_FILE`. To supply
 picker-specific fzf defaults, set `KITTY_WORKSPACE_PICKER_FZF_OPTS` in the
 environment inherited by Kitty. The picker's explicit command-line options still
 apply.
+
+## Update
+
+Rerun the stable download command or update your checkout and repeat
+[installation](#installation), then restart Kitty.
+
+## Uninstall
+
+Remove the picker binding from `kitty.conf`, then run from a checkout or
+extracted release:
+
+```sh
+sh install.sh --uninstall
+```
+
+Or use the stable installer:
+
+```sh
+curl -fsSL https://github.com/mike-ap/kitty-workspace-picker/releases/latest/download/bootstrap.sh | sh -s -- --uninstall
+```
+
+Use `--config-dir /path/to/kitty` for a custom configuration directory, and
+restart Kitty afterward.
 
 ## Development
 
