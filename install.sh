@@ -127,4 +127,5 @@ fi
 # Write the version only after all copies succeed. Older one-line markers upgrade.
 printf '%s\n' "Installed by $project" "version=$version" >"$marker"
 echo "Installed $project $version in $config_dir."
-echo "Add the picker keybind to kitty.conf as described in README.md, then restart Kitty."
+echo "Add this keybind to kitty.conf, then restart Kitty:"
+echo "map ctrl+shift+p kitten kitty_workspace_picker/kitten.py"
