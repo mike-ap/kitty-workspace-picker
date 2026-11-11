@@ -46,11 +46,15 @@ marker=$package/.$project
 # Validate the entire managed namespace before copying or removing anything.
 [ ! -L "$package" ] || fail "$package must not be a symlink"
 if [ -e "$package" ]; then
-    [ -d "$package" ] && [ -f "$marker" ] && [ ! -L "$marker" ] || fail "$package is not owned by this installer"
+    if [ ! -d "$package" ] || [ ! -f "$marker" ] || [ -L "$marker" ]; then
+        fail "$package is not owned by this installer"
+    fi
     [ "$(head -n 1 "$marker")" = "Installed by $project" ] || fail "invalid ownership marker"
     for member in "$package"/*.py; do
         [ -e "$member" ] || [ -L "$member" ] || continue
-        [ -f "$member" ] && [ ! -L "$member" ] || fail "$member must be a regular file"
+        if [ ! -f "$member" ] || [ -L "$member" ]; then
+            fail "$member must be a regular file"
+        fi
     done
 fi
 for cache in "$package/__pycache__" "$config_dir/__pycache__"; do
@@ -95,7 +99,9 @@ if [ "$uninstall" = true ]; then
     exit 0
 fi
 
-[ -f "$source_dir/src/$package_name/__init__.py" ] && [ -f "$source_dir/pyproject.toml" ] || fail "incomplete source directory"
+if [ ! -f "$source_dir/src/$package_name/__init__.py" ] || [ ! -f "$source_dir/pyproject.toml" ]; then
+    fail "incomplete source directory"
+fi
 for name in $endpoints; do
     [ -f "$source_dir/src/$package_name/$name" ] || fail "incomplete source directory"
 done
