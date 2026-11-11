@@ -5,6 +5,8 @@ a release is tagged.
 
 ## Unreleased
 
+- Link to the fzf project from the README introduction.
+
 ## 0.1.2 - 2026-11-11
 
 - Streamline the README installation and usage guide around release installation,
