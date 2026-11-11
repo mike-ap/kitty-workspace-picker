@@ -5,6 +5,9 @@ a release is tagged.
 
 ## Unreleased
 
+- Streamline the README installation and usage guide around release installation,
+  keybindings, and pane movement commands.
+
 ## 0.1.1 - 2026-11-11
 
 - Simplify publishing with `just release VERSION`: update the project version and
