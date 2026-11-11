@@ -3,8 +3,6 @@
     "default": true,
     // Prose is soft-wrapped; shell commands and compatibility tables can be long.
     "MD013": false,
-    // Embedded screencast player and its fallback link.
-    "MD033": { "allowed_elements": ["video", "a"] },
     // Changelogs repeat Added/Changed/Fixed within different release sections.
     "MD024": { "siblings_only": true }
   },

@@ -3,9 +3,11 @@
 An fzf picker for Kitty windows, with [Kitty
 Workspaces](https://github.com/mike-ap/kitty-workspaces) support.
 
-<video src="docs/assets/kitty-workspaces-demo.mp4" controls width="100%">
-  <a href="docs/assets/kitty-workspaces-demo.mp4">Watch the screencast</a>
-</video>
+<!-- markdownlint-disable MD034 -->
+
+https://github.com/user-attachments/assets/a824eb3d-98f7-48c0-820f-cb8d9465bad8
+
+<!-- markdownlint-enable MD034 -->
 
 The picker lists individual windows. When Kitty Workspaces is present, it
 instead lists workspaces.
