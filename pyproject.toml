@@ -1,6 +1,6 @@
 [project]
 name = "kitty-workspace-picker"
-version = "0.1.2"
+version = "0.1.3"
 description = "Fzf Kitty window picker with optional published workspace metadata"
 readme = "README.md"
 authors = [{ name = "Michael Apicelli" }]
