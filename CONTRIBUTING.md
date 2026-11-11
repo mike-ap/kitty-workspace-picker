@@ -97,39 +97,33 @@ version-1 metadata as well as absent, invalid, and timed-out provider fallbacks.
 
 ## Release preparation
 
-Source archives are the supported release artifact. Keep changelog entries under
-Unreleased until preparing a release. Set the version in `pyproject.toml`, update
-the lockfile with `uv lock`, and move the release's changelog entries into a dated
-version section. Run the checks and smoke tests above, then:
+Source archives are the supported release artifact. Add user-visible changes under
+`## Unreleased` in `CHANGELOG.md` as you work. Complete the manual compatibility
+checks above and commit your work, then run:
 
 ```sh
-just dist
+just release 0.2.0
 ```
 
-This runs `uv build --sdist` and
-`uv run --locked python scripts/check_dist.py`, producing and verifying
-`dist/kitty_workspace_picker-VERSION.tar.gz`. Kitty and uv must be on PATH. The
-check compares the archive with the checkout, extracts it outside the checkout,
-installs into a temporary Kitty configuration from an unrelated directory,
-checks that existing configuration survives, and loads the installed package
-and entry point under Kitty's interpreter. Unlike optional runtime tests,
-release verification fails if Kitty is unavailable.
+`just release VERSION` requires a clean checkout on a branch with an `origin`
+remote and rejects an existing local or remote tag. It sets the version in
+`pyproject.toml`, runs `uv lock`, and moves the Unreleased notes into a dated
+`## VERSION - YYYY-MM-DD` section, keeping an empty Unreleased section for future
+changes. Nonempty release notes are required. An already prepared dated section
+is also accepted when it matches the current project version.
 
-Use a dated changelog heading exactly like `## 0.1.0 - 2026-11-04`. Commit the
-prepared source, then run:
+The command runs `just check` and `just dist`, commits the prepared files as
+`chore(release): vVERSION` when they changed, creates an annotated `vVERSION`
+tag, and atomically pushes the current branch and tag to `origin`. Kitty and uv
+must be on PATH. `just dist` builds the source archive and verifies installation
+and entry points under Kitty's interpreter. Manual compatibility checks must be
+completed before releasing.
 
-```sh
-just release 0.1.0
-```
-
-`just release VERSION` validates the version and dated notes, requires a clean
-checkout on a branch with an `origin` remote, and rejects an existing local or
-remote tag. It runs `just check` and `just dist`, creates an annotated `vVERSION`
-tag, then atomically pushes the current branch and tag to `origin`. It does not
-bump versions, edit the changelog, or make commits. Complete manual compatibility
-checks before running it. If the push fails, the local tag remains; resolve the
-reported problem and push the branch and tag together, or delete the local tag
-before retrying the command.
+If preparation or checks fail, no release commit or tag is created; any prepared
+file edits remain available for inspection. Fix the problem and either commit
+those edits or restore them before retrying from a clean checkout. If the push
+fails, the release commit and local tag remain; resolve the reported problem and
+push the branch and tag together, or delete the local tag before retrying.
 
 The tag-triggered `.github/workflows/release.yml` installs Kitty 0.50.0, runs the
 checks, builds and verifies the source archive, and validates that the stable

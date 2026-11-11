@@ -29,7 +29,7 @@ dist:
     uv build --sdist
     uv run --locked python scripts/check_dist.py
 
-# Verify a prepared release, then push its branch and annotated tag to origin.
+# Prepare and commit a release, then push its branch and annotated tag to origin.
 [positional-arguments]
 release version:
     uv run --locked python scripts/release.py "$1"

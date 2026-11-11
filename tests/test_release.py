@@ -33,6 +33,7 @@ def checkout(tmp_path):
     (root / ".gitignore").write_text("__pycache__/\n")
     (root / "pyproject.toml").write_text('[project]\nversion = "0.1.0"\n')
     (root / "CHANGELOG.md").write_text("## 0.1.0 - 2026-11-04\n\nInitial release.\n")
+    (root / "uv.lock").write_text("version = 1\n")
     git(root, "add", ".")
     git(root, "commit", "-m", "Initial source")
     remote = tmp_path / "remote.git"
@@ -50,6 +51,13 @@ def checkout(tmp_path):
         "sys.exit(1 if os.environ.get('FAIL_CHECK') == sys.argv[1] else 0)\n"
     )
     just.chmod(0o755)
+    uv = binary / "uv"
+    uv.write_text(
+        f"#!{sys.executable}\n"
+        "import pathlib\n"
+        "pathlib.Path('uv.lock').write_text('version = 1\\n')\n"
+    )
+    uv.chmod(0o755)
     env = os.environ | {
         "PATH": str(binary) + os.pathsep + os.environ["PATH"],
         "CHECK_LOG": str(tmp_path / "checks"),
@@ -81,7 +89,7 @@ def test_release_checks_then_pushes_branch_and_annotated_tag(checkout):
 
 
 @pytest.mark.parametrize(
-    "problem", ["dirty", "version", "local-tag", "remote-tag", "check"]
+    "problem", ["dirty", "version", "local-tag", "remote-tag", "check", "notes"]
 )
 def test_failed_preflight_never_pushes_a_branch(checkout, problem):
     root, remote, env = checkout
@@ -92,9 +100,12 @@ def test_failed_preflight_never_pushes_a_branch(checkout, problem):
         if problem == "remote-tag":
             git(root, "push", "origin", "refs/tags/v0.1.0")
             git(root, "tag", "--delete", "v0.1.0")
+    elif problem == "notes":
+        (root / "CHANGELOG.md").write_text("## Unreleased\n\n")
+        git(root, "commit", "-am", "Remove notes")
     elif problem == "check":
         env["FAIL_CHECK"] = "check"
-    result = release(checkout, "9.9.9" if problem == "version" else "0.1.0")
+    result = release(checkout, "invalid" if problem == "version" else "0.1.0")
     assert result.returncode != 0
     assert not git(remote, "for-each-ref", "refs/heads")
     if problem != "local-tag":
@@ -110,4 +121,36 @@ def test_rejected_push_keeps_local_tag_and_reports_recovery(checkout):
     assert result.returncode != 0
     assert "local tag v0.1.0 remains" in result.stderr
     assert git(root, "tag", "--list") == "v0.1.0"
+    assert not git(remote, "for-each-ref")
+
+
+def test_release_prepares_and_commits_source(checkout):
+    root, remote, _ = checkout
+    (root / "CHANGELOG.md").write_text(
+        "# Changelog\n\n## Unreleased\n\n- New feature.\n\n## 0.1.0 - 2026-11-04\n\nInitial release.\n"
+    )
+    git(root, "commit", "-am", "Add feature notes")
+    result = release(checkout, "0.2.0")
+    assert result.returncode == 0, result.stderr
+    assert 'version = "0.2.0"' in (root / "pyproject.toml").read_text()
+    notes = (root / "CHANGELOG.md").read_text()
+    assert "## Unreleased\n\n## 0.2.0 - " in notes
+    assert "- New feature." in notes
+    assert git(root, "log", "-1", "--format=%s") == "chore(release): v0.2.0"
+    assert not git(root, "status", "--porcelain")
+    assert git(remote, "rev-parse", "refs/heads/main") == git(
+        root, "rev-parse", "v0.2.0^{}"
+    )
+
+
+def test_failed_checks_do_not_commit_preparation(checkout):
+    root, remote, env = checkout
+    (root / "CHANGELOG.md").write_text("## Unreleased\n\n- New feature.\n")
+    git(root, "commit", "-am", "Add notes")
+    before = git(root, "rev-parse", "HEAD")
+    env["FAIL_CHECK"] = "check"
+    result = release(checkout, "0.2.0")
+    assert result.returncode != 0
+    assert git(root, "rev-parse", "HEAD") == before
+    assert not git(root, "tag", "--list")
     assert not git(remote, "for-each-ref")
