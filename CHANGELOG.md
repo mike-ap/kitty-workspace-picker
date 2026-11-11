@@ -5,6 +5,8 @@ a release is tagged.
 
 ## Unreleased
 
+## 0.1.2 - 2026-11-11
+
 - Streamline the README installation and usage guide around release installation,
   keybindings, and pane movement commands.
 
