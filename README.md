@@ -1,6 +1,6 @@
 # Kitty Workspace Picker
 
-An fzf picker for Kitty windows, with [Kitty
+An [fzf](https://github.com/junegunn/fzf) picker for Kitty windows, with [Kitty
 Workspaces](https://github.com/mike-ap/kitty-workspaces) support.
 
 <!-- markdownlint-disable MD034 -->
