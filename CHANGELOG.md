@@ -5,6 +5,8 @@ a release is tagged.
 
 ## Unreleased
 
+## 0.1.4 - 2026-11-15
+
 - Add a direct link to Kitty in the README introduction.
 
 ## 0.1.3 - 2026-11-11
