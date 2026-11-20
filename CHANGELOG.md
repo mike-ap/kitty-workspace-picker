@@ -5,6 +5,8 @@ a release is tagged.
 
 ## Unreleased
 
+## 0.1.5 - 2026-11-20
+
 - Publish a companion release for Kitty Workspaces 0.1.5; picker behavior is
   unchanged from 0.1.4.
 
